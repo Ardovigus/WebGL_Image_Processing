@@ -1,3 +1,10 @@
+function computeKernelWeight(kernel) {
+    var weight = kernel.reduce(function(prev, curr) {
+        return prev + curr;
+    });
+    return weight <= 0 ? 1 : weight;
+  }
+
 function main() {
     var image = new Image();
     image.src = "sample.jpg";
@@ -51,6 +58,15 @@ function render(image) {
 
   var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
   var textureSizeLocation = gl.getUniformLocation(program, "u_textureSize");
+  var kernelLocation = gl.getUniformLocation(program, "u_kernel[0]");
+  var kernelWeightLocation = gl.getUniformLocation(program, "u_kernelWeight");
+
+  var edgeDetectKernel = [
+    -1, -1, -1,
+    -1,  8, -1,
+    -1, -1, -1
+  ];
+
 
   webglUtils.resizeCanvasToDisplaySize(gl.canvas);
 
@@ -88,6 +104,9 @@ function render(image) {
   gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
 
   gl.uniform2f(textureSizeLocation, image.width, image.height);
+
+  gl.uniform1fv(kernelLocation, edgeDetectKernel);
+  gl.uniform1f(kernelWeightLocation, computeKernelWeight(edgeDetectKernel));
 
   var primitiveType = gl.TRIANGLES;
   var offset = 0;
