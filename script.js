@@ -50,6 +50,7 @@ function render(image) {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
 
   var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+  var textureSizeLocation = gl.getUniformLocation(program, "u_textureSize");
 
   webglUtils.resizeCanvasToDisplaySize(gl.canvas);
 
@@ -85,6 +86,8 @@ function render(image) {
   gl.vertexAttribPointer(texcoordLocation, size, type, normalize, stride, offset);
 
   gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
+
+  gl.uniform2f(textureSizeLocation, image.width, image.height);
 
   var primitiveType = gl.TRIANGLES;
   var offset = 0;
